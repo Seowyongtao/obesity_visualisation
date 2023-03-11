@@ -1,8 +1,6 @@
 from dash import Dash, dcc, html, Output, Input, State, callback
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objs as go
-import numpy as np
 import dash_bootstrap_components as dbc
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
