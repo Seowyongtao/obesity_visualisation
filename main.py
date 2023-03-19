@@ -1,4 +1,4 @@
-from dash import Dash, dcc, html, Output, Input, State, callback
+from dash import Dash, dcc, html, Output, Input, callback
 import pandas as pd
 import plotly.express as px
 import dash_bootstrap_components as dbc
@@ -40,22 +40,15 @@ country_df = obesity_sorted_by_value_df[['LOCATION']]
 country_list = country_df['LOCATION'].tolist()
 
 # Data filtered by country (For line chart part)
-
 obesity_full_df = pd.read_csv("obesity_by_country_full.csv")
 obesity_mean_full_df = obesity_full_df.groupby(['LOCATION', 'TIME'])['Value'].mean().reset_index()
 mask = obesity_mean_full_df['LOCATION'] == country_list[0]
 obesity_mean_full_filtered_df = obesity_mean_full_df[mask]
-# print(obesity_mean_full_filtered_df)
 
 alcohol_full_df = pd.read_csv("alcohol_by_country_full.csv")
 alcohol_mean_full_df = alcohol_full_df.groupby(['LOCATION', 'TIME'])['Value'].mean().reset_index()
 mask = alcohol_mean_full_df['LOCATION'] == country_list[0]
 alcohol_mean_full_filtered_df = alcohol_mean_full_df[mask]
-
-# test area #
-
-df = pd.DataFrame({'names': ['progress', ' '],
-                   'values': [100 - 20, 100]})
 
 #############################################################
 
