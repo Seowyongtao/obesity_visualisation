@@ -80,10 +80,15 @@ fig_map = fig_map.update_layout(geo=dict(bgcolor='black',
 
 fig_scatterPlot = px.scatter(merged_df
                              , x='Alcohol_value', y='Obesity_value'
-                             , size='Alcohol_value', title='Scatter Plot'
-                             , color='Obesity_value'
+                             , size='Obesity_value'
+                             , title='Obese (% of population aged 15+) vs Alcohol Consumption (Litre/Capita, aged 15+)'
+                             , color='Alcohol_value'
                              , color_continuous_scale=['white', '#62fbd3', '#00ff85']
-                             , color_discrete_sequence=['#00ff85'])
+                             , color_discrete_sequence=['#00ff85']
+                             , labels={
+                                    "Alcohol_value": "Alcohol Consumption",
+                                    "Obesity_value": "Obesity"
+                                })
 
 fig_scatterPlot = fig_scatterPlot.update_layout(
     plot_bgcolor='black'
@@ -350,9 +355,10 @@ app.layout = html.Div(
             children=[
                 dbc.Row([
                     dbc.Col([
-                        dcc.Dropdown(id='scatterDropdown', options=['Alcohol', 'Smoke', 'Social Support'],
+                        'Select a Lifestyle Factor to compare with:',
+                        dcc.Dropdown(id='scatterDropdown', options=['Alcohol Consumption', 'Daily Smokers', 'Social Support'],
                                      value='Alcohol')
-                    ], width=12),
+                    ], width=12, style={'color': '#00ff85'}),
                     dbc.Col([
                         dcc.Graph(
                             id='scatterChart',
@@ -588,7 +594,9 @@ def update_pies(click_data):
     prevent_initial_call=True
 )
 def update_scatter_plot(chosen_data):
-    if chosen_data == 'Alcohol':
+
+    # Update scatter plot according to what user pick from the dropdown
+    if chosen_data == 'Alcohol Consumption':
 
         new_merged_df = pd.merge(obesity_sorted_by_value_df, alcohol_sorted_by_value_df, on='LOCATION')
         new_merged_df = new_merged_df[['LOCATION', 'Value_x', 'Value_y']]
@@ -596,17 +604,21 @@ def update_scatter_plot(chosen_data):
 
         fig_scatter_plot = px.scatter(new_merged_df
                                       , x='Alcohol_value', y='Obesity_value'
-                                      , size='Alcohol_value', title='Scatter Plot'
-                                      , color='Obesity_value'
+                                      , size='Obesity_value', title='Obese (% of population aged 15+) vs Alcohol Consumption (Litre/Capita, aged 15+)'
+                                      , color='Alcohol_value'
                                       , color_continuous_scale=['white', '#62fbd3', '#00ff85']
-                                      , color_discrete_sequence=['#00ff85'])
+                                      , color_discrete_sequence=['#00ff85']
+                                      , labels={
+                                            "Alcohol_value": "Alcohol Consumption",
+                                            "Obesity_value": "Obesity"
+                                        })
 
         fig_scatter_plot = fig_scatter_plot.update_layout(
             plot_bgcolor='black'
             , paper_bgcolor='black'
             , font_color='#00ff85')
 
-    elif chosen_data == 'Smoke':
+    elif chosen_data == 'Daily Smokers':
 
         new_merged_df = pd.merge(obesity_sorted_by_value_df, smoke_sorted_by_value_df, on='LOCATION')
         new_merged_df = new_merged_df[['LOCATION', 'Value_x', 'Value_y']]
@@ -614,10 +626,15 @@ def update_scatter_plot(chosen_data):
 
         fig_scatter_plot = px.scatter(new_merged_df
                                       , x='Smoke_value', y='Obesity_value'
-                                      , size='Smoke_value', title='Scatter Plot'
-                                      , color='Obesity_value'
+                                      , size='Obesity_value'
+                                      , title='Obese (% of population aged 15+) vs Daily Smokers (% of population aged 15+)'
+                                      , color='Smoke_value'
                                       , color_continuous_scale=['white', '#62fbd3', '#00ff85']
-                                      , color_discrete_sequence=['#00ff85'])
+                                      , color_discrete_sequence=['#00ff85']
+                                      , labels={
+                                            "Smoke_value": "Daily Smokers",
+                                            "Obesity_value": "Obesity"
+                                        })
 
         fig_scatter_plot = fig_scatter_plot.update_layout(
             plot_bgcolor='black'
@@ -632,10 +649,15 @@ def update_scatter_plot(chosen_data):
 
         fig_scatter_plot = px.scatter(new_merged_df
                                       , x='Social_support_value', y='Obesity_value'
-                                      , size='Social_support_value', title='Scatter Plot'
-                                      , color='Obesity_value'
+                                      , size='Obesity_value'
+                                      , title='Obese (% of population aged 15+) vs Social Support (% of population aged 15+)'
+                                      , color='Social_support_value'
                                       , color_continuous_scale=['white', '#62fbd3', '#00ff85']
-                                      , color_discrete_sequence=['#00ff85'])
+                                      , color_discrete_sequence=['#00ff85']
+                                      , labels={
+                                            "Social_support_value": "Social Support",
+                                            "Obesity_value": "Obesity"
+                                        })
 
         fig_scatter_plot = fig_scatter_plot.update_layout(
             plot_bgcolor='black'
