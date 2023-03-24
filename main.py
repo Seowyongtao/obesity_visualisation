@@ -66,7 +66,7 @@ fig_map = px.choropleth(data_frame=obesity_sorted_by_value_df
                         , locationmode='ISO-3'
                         , color_continuous_scale='Aggrnyl'
                         , range_color=[0, obesity_sorted_by_value_df['Value'].max()]
-                        , labels={'Value': 'Obesity<br>(population %)'})
+                        , labels={'Value': 'Obese<br>(population %)'})
 
 fig_map = fig_map.update_layout(geo=dict(bgcolor='black',
                                          projection_type='orthographic',
@@ -204,14 +204,17 @@ app.layout = html.Div(
                             figure=px.bar(obesity_sorted_by_value_df
                                           , x='LOCATION', y='Value'
                                           , color_discrete_sequence=['#00ff85']
-                                          , text_auto='.2s').update_layout(
-                                # margin=dict(l=0, r=0, t=0, b=0),
+                                          , text_auto='.2s'
+                                          , labels={
+                                                 "LOCATION": "Country",
+                                                 "Value": "Population (%)"
+                                             }).update_layout(
                                 plot_bgcolor='black',
                                 paper_bgcolor='black',
                                 font_color='#00ff85',
                                 xaxis_tickangle=-45,
                                 title={
-                                    'text': "<b> Overweight/Obese Population </b>",
+                                    'text': "<b> Obese (% of population aged 15+) </b>",
                                     'font': {
                                         'size': 20,
                                         'color': '#00ff85'
@@ -232,14 +235,17 @@ app.layout = html.Div(
                             figure=px.bar(alcohol_sorted_by_value_df
                                           , x='LOCATION', y='Value'
                                           , color_discrete_sequence=['#00ff85']
-                                          , text_auto='.2s').update_layout(
-                                # margin=dict(l=0, r=0, t=0, b=0),
+                                          , text_auto='.2s'
+                                          , labels={
+                                                "LOCATION": "Country",
+                                                "Value": "Litre/Capita"
+                                            }).update_layout(
                                 plot_bgcolor='black',
                                 paper_bgcolor='black',
                                 font_color='#00ff85',
                                 xaxis_tickangle=-45,
                                 title={
-                                    'text': "<b> Alcohol Consumption </b>",
+                                    'text': "<b> Alcohol Consumption (lcpd, aged 15+) </b>",
                                     'font': {
                                         'size': 20,
                                         'color': '#00ff85'
@@ -270,14 +276,17 @@ app.layout = html.Div(
                             figure=px.bar(smoke_sorted_by_value_df
                                           , x='LOCATION', y='Value'
                                           , color_discrete_sequence=['#00ff85']
-                                          , text_auto='.2s').update_layout(
-                                # margin=dict(l=0, r=0, t=0, b=0),
+                                          , text_auto='.2s'
+                                          , labels={
+                                                "LOCATION": "Country",
+                                                "Value": "Population (%)"
+                                            }).update_layout(
                                 plot_bgcolor='black',
                                 paper_bgcolor='black',
                                 font_color='#00ff85',
                                 xaxis_tickangle=-45,
                                 title={
-                                    'text': "<b> Daily Smokers </b>",
+                                    'text': "<b> Daily Smokers (% of population aged 15+)</b>",
                                     'font': {
                                         'size': 20,
                                         'color': '#00ff85'
@@ -298,14 +307,17 @@ app.layout = html.Div(
                             figure=px.bar(social_support_sorted_by_value_df
                                           , x='LOCATION', y='Value'
                                           , color_discrete_sequence=['#00ff85']
-                                          , text_auto='.2s').update_layout(
-                                # margin=dict(l=0, r=0, t=0, b=0),
+                                          , text_auto='.2s'
+                                          , labels={
+                                                "LOCATION": "Country",
+                                                "Value": "Population (%)"
+                                            }).update_layout(
                                 plot_bgcolor='black',
                                 paper_bgcolor='black',
                                 font_color='#00ff85',
                                 xaxis_tickangle=-45,
                                 title={
-                                    'text': "<b> Social Support </b>",
+                                    'text': "<b> Social Support (% of population aged 15+) </b>",
                                     'font': {
                                         'size': 20,
                                         'color': '#00ff85'
@@ -479,7 +491,7 @@ def update_pies(click_data):
                              , color_discrete_map={'progress': '#00ff85',
                                                    'remaining': 'grey'})
 
-    fig_pie_obesity = fig_pie_obesity.update_layout(title_text='Obesity (population %)'
+    fig_pie_obesity = fig_pie_obesity.update_layout(title_text='Obese (population %)'
                                                     , margin=dict(t=50, b=50, l=50, r=50)
                                                     , paper_bgcolor='black'
                                                     , font_color='#00ff85'
