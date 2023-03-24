@@ -94,8 +94,12 @@ fig_scatterPlot = fig_scatterPlot.update_layout(
 
 fig_lineChart1 = px.line(obesity_mean_full_filtered_df
                          , x="TIME", y="Value"
-                         , title='Overweight or obese population in [Country]'
-                         , markers=True)
+                         , title='Obese (% of population aged 15+)'
+                         , markers=True
+                         , labels={
+                                 "TIME": "Year",
+                                 "Value": "Population (%)"
+                           })
 
 fig_lineChart1 = fig_lineChart1.update_layout(
     plot_bgcolor='black'
@@ -107,8 +111,12 @@ fig_lineChart1 = fig_lineChart1.update_traces(
 
 fig_lineChart2 = px.line(alcohol_mean_full_filtered_df
                          , x="TIME", y="Value"
-                         , title='Overweight or obese population in [Country]'
-                         , markers=True)
+                         , title='Alcohol Consumption (lcpd, aged 15+)'
+                         , markers=True
+                         , labels={
+                                 "TIME": "Year",
+                                 "Value": "Litre/Capita"
+                           })
 
 fig_lineChart2 = fig_lineChart2.update_layout(
     plot_bgcolor='black'
@@ -286,7 +294,7 @@ app.layout = html.Div(
                                 font_color='#00ff85',
                                 xaxis_tickangle=-45,
                                 title={
-                                    'text': "<b> Daily Smokers (% of population aged 15+)</b>",
+                                    'text': "<b> Daily Smokers (% of population aged 15+) </b>",
                                     'font': {
                                         'size': 20,
                                         'color': '#00ff85'
@@ -368,11 +376,13 @@ app.layout = html.Div(
             children=[
                 dbc.Row([
                     dbc.Col([
+                        "Select a Country:",
                         dcc.Dropdown(id='lineChartDropdown1', options=country_list, value=country_list[0])
                     ], width=6, className='lineChartDropdown'),
 
                     dbc.Col([
-                        dcc.Dropdown(id='lineChartDropdown2', options=['Alcohol', 'Smoke', 'Social Support'],
+                        "Select a Lifestyle Factor to compare with:",
+                        dcc.Dropdown(id='lineChartDropdown2', options=['Alcohol Consumption', 'Daily Smokers', 'Social Support'],
                                      value='Alcohol')
                     ], width=6, className='lineChartDropdown'),
 
@@ -656,8 +666,12 @@ def update_scatter_plot(chosen_country, chosen_life_factor):
 
     fig_line_chart_1 = px.line(new_obesity_mean_full_filtered_df
                                , x="TIME", y="Value"
-                               , title='Overweight or obese population in [Country]'
-                               , markers=True)
+                               , title='Obese (% of population aged 15+)'
+                               , markers=True
+                               , labels={
+                                     "TIME": "Year",
+                                     "Value": "Population (%)"
+                                 })
 
     fig_line_chart_1 = fig_line_chart_1.update_layout(
         plot_bgcolor='black'
@@ -667,7 +681,8 @@ def update_scatter_plot(chosen_country, chosen_life_factor):
     fig_line_chart_1 = fig_line_chart_1.update_traces(
         line_color='#00ff85')
 
-    if chosen_life_factor == 'Alcohol':
+    # Update the dataset and line chart based on which value picked from dropdown
+    if chosen_life_factor == 'Alcohol Consumption':
 
         new_alcohol_full_df = pd.read_csv("alcohol_by_country_full.csv")
         new_alcohol_mean_full_df = new_alcohol_full_df.groupby(['LOCATION', 'TIME'])['Value'].mean().reset_index()
@@ -676,8 +691,12 @@ def update_scatter_plot(chosen_country, chosen_life_factor):
 
         fig_line_chart_2 = px.line(new_alcohol_mean_full_filtered_df
                                    , x="TIME", y="Value"
-                                   , title='Overweight or obese population in [Country]'
-                                   , markers=True)
+                                   , title='Alcohol Consumption (lcpd, aged 15+)'
+                                   , markers=True
+                                   , labels={
+                                         "TIME": "Year",
+                                         "Value": "Litre/Capita"
+                                      })
 
         fig_line_chart_2 = fig_line_chart_2.update_layout(
             plot_bgcolor='black'
@@ -687,7 +706,7 @@ def update_scatter_plot(chosen_country, chosen_life_factor):
         fig_line_chart_2 = fig_line_chart_2.update_traces(
             line_color='red')
 
-    elif chosen_life_factor == 'Smoke':
+    elif chosen_life_factor == 'Daily Smokers':
 
         smoke_full_df = pd.read_csv("smoke_by_country_full.csv")
         filter_mask = smoke_full_df['SUBJECT'] == 'TOT'
@@ -699,8 +718,12 @@ def update_scatter_plot(chosen_country, chosen_life_factor):
 
         fig_line_chart_2 = px.line(smoke_mean_full_filtered_by_country_df
                                    , x="TIME", y="Value"
-                                   , title='Overweight or obese population in [Country]'
-                                   , markers=True)
+                                   , title='Daily Smokers (% of population aged 15+)'
+                                   , markers=True
+                                   , labels={
+                                             "TIME": "Year",
+                                             "Value": "Population (%)"
+                                      })
 
         fig_line_chart_2 = fig_line_chart_2.update_layout(
             plot_bgcolor='black'
@@ -722,8 +745,12 @@ def update_scatter_plot(chosen_country, chosen_life_factor):
 
         fig_line_chart_2 = px.line(social_support_mean_full_filtered_by_country_df
                                    , x="TIME", y="Value"
-                                   , title='Overweight or obese population in [Country]'
-                                   , markers=True)
+                                   , title='Social Support (% of population aged 15+)'
+                                   , markers=True
+                                   , labels={
+                                         "TIME": "Year",
+                                         "Value": "Population (%)"
+                                     })
 
         fig_line_chart_2 = fig_line_chart_2.update_layout(
             plot_bgcolor='black'

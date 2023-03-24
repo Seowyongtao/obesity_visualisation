@@ -160,6 +160,10 @@ div, svg {
     margin-top : 3rem;
 }
 
+.lineChartDropdown{
+    color: #00ff85;
+}
+
 .lineChartDropdown .Select-control {
     background-color: black !important;
     color: #00ff85;
