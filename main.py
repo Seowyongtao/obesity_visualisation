@@ -5,6 +5,10 @@ import dash_bootstrap_components as dbc
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
+#############################################################
+
+# Data Processing area #
+
 # transform obesity dataset
 obesity_df = pd.read_csv("obesity_by_country.csv")
 obesity_mean_df = obesity_df.groupby(['LOCATION', 'TIME'])['Value'].mean().reset_index()
@@ -61,17 +65,15 @@ fig_map = px.choropleth(data_frame=obesity_sorted_by_value_df
                         , color='Value'
                         , locationmode='ISO-3'
                         , color_continuous_scale='Aggrnyl'
-                        , range_color=[0, obesity_sorted_by_value_df['Value'].max()])
+                        , range_color=[0, obesity_sorted_by_value_df['Value'].max()]
+                        , labels={'Value': 'Obesity<br>(population %)'})
 
 fig_map = fig_map.update_layout(geo=dict(bgcolor='black',
-                                         # showframe=False,
-                                         # showcoastlines=False,
                                          projection_type='orthographic',
                                          showocean=True, oceancolor="lightblue",
                                          showland=True, landcolor="white"),
                                 paper_bgcolor='black',
                                 margin=dict(l=0, r=0, t=0, b=0),
-                                # coloraxis_colorbar_x=0.9,
                                 font_color='#00ff85')
 
 # Scatter Plot
@@ -405,11 +407,10 @@ app.layout = html.Div(
     ],
     Input(component_id='map', component_property='clickData')
 )
-def update_figure(click_data):
+def update_pies(click_data):
     if click_data is not None:
 
-        print(click_data['points'][0]['location'])
-
+        # Update dataset for obesity pie chart
         filter_mask = obesity_sorted_by_value_df['LOCATION'] == click_data['points'][0]['location']
         new_obesity_sorted_by_value_filtered_country_df = obesity_sorted_by_value_df[filter_mask]
         new_obesity_value = new_obesity_sorted_by_value_filtered_country_df['Value'].to_string(index=False)
@@ -418,6 +419,7 @@ def update_figure(click_data):
         new_obesity_percentage_df = pd.DataFrame({'names': ['progress', 'remaining'],
                                                   'values': [new_obesity_value / 100, (100 - new_obesity_value) / 100]})
 
+        # Update dataset for alcohol pie chart
         filter_mask = alcohol_sorted_by_value_df['LOCATION'] == click_data['points'][0]['location']
         new_alcohol_sorted_by_value_filtered_country_df = alcohol_sorted_by_value_df[filter_mask]
         new_alcohol_value = new_alcohol_sorted_by_value_filtered_country_df['Value'].to_string(index=False)
@@ -426,6 +428,7 @@ def update_figure(click_data):
         new_alcohol_percentage_df = pd.DataFrame({'names': ['progress', 'remaining'],
                                                   'values': [new_alcohol_value / 13, (13 - new_alcohol_value) / 13]})
 
+        # Update dataset daily smoker pie chart
         filter_mask = smoke_sorted_by_value_df['LOCATION'] == click_data['points'][0]['location']
         new_smoke_sorted_by_value_filtered_country_df = smoke_sorted_by_value_df[filter_mask]
         new_smoke_value = new_smoke_sorted_by_value_filtered_country_df['Value'].to_string(index=False)
@@ -434,16 +437,20 @@ def update_figure(click_data):
         new_smoke_percentage_df = pd.DataFrame({'names': ['progress', 'remaining'],
                                                 'values': [new_smoke_value / 100, (100 - new_smoke_value) / 100]})
 
+        # Update dataset for social support pie chart
         filter_mask = social_support_sorted_by_value_df['LOCATION'] == click_data['points'][0]['location']
         new_social_support_sorted_by_value_filtered_country_df = social_support_sorted_by_value_df[filter_mask]
-        new_social_support_value = new_social_support_sorted_by_value_filtered_country_df['Value'].to_string(index=False)
+        new_social_support_value = new_social_support_sorted_by_value_filtered_country_df['Value'].to_string(
+            index=False)
         new_social_support_value = float(new_social_support_value)
 
         new_social_support_percentage_df = pd.DataFrame({'names': ['progress', 'remaining'],
-                                                         'values': [new_social_support_value / 100, (100 - new_social_support_value) / 100]})
+                                                         'values': [new_social_support_value / 100,
+                                                                    (100 - new_social_support_value) / 100]})
 
     else:
 
+        # Remain 0 if the map data is not clicked for all the pie charts
         new_obesity_value = 0
 
         new_obesity_percentage_df = pd.DataFrame({'names': ['progress', 'remaining'],
@@ -462,8 +469,9 @@ def update_figure(click_data):
         new_social_support_value = 0
 
         new_social_support_percentage_df = pd.DataFrame({'names': ['progress', 'remaining'],
-                                                'values': [0 / 100, (100 - 0) / 100]})
+                                                         'values': [0 / 100, (100 - 0) / 100]})
 
+    # Update obesity pie chart
     fig_pie_obesity = px.pie(new_obesity_percentage_df
                              , values='values', names='names'
                              , hole=0.5, height=225.5
@@ -471,7 +479,7 @@ def update_figure(click_data):
                              , color_discrete_map={'progress': '#00ff85',
                                                    'remaining': 'grey'})
 
-    fig_pie_obesity = fig_pie_obesity.update_layout(title_text='Obesity Population'
+    fig_pie_obesity = fig_pie_obesity.update_layout(title_text='Obesity (population %)'
                                                     , margin=dict(t=50, b=50, l=50, r=50)
                                                     , paper_bgcolor='black'
                                                     , font_color='#00ff85'
@@ -479,9 +487,12 @@ def update_figure(click_data):
 
     fig_pie_obesity = fig_pie_obesity.update(layout_showlegend=False).add_annotation(x=0.5, y=0.5
                                                                                      , text=str(int(new_obesity_value)) + '%'
-                                                                                     , font=dict(size=20, family='Verdana', color='#00ff85')
+                                                                                     , font=dict(size=20,
+                                                                                                 family='Verdana',
+                                                                                                 color='#00ff85')
                                                                                      , showarrow=False)
 
+    # Update alcohol pie chart
     fig_pie_alcohol = px.pie(new_alcohol_percentage_df
                              , values='values', names='names'
                              , hole=0.5, height=225.5
@@ -489,7 +500,7 @@ def update_figure(click_data):
                              , color_discrete_map={'progress': '#00ff85',
                                                    'remaining': 'grey'})
 
-    fig_pie_alcohol = fig_pie_alcohol.update_layout(title_text='Obesity Population'
+    fig_pie_alcohol = fig_pie_alcohol.update_layout(title_text='Alcohol Consumption (lcpd)'
                                                     , margin=dict(t=50, b=50, l=50, r=50)
                                                     , paper_bgcolor='black'
                                                     , font_color='#00ff85'
@@ -497,9 +508,12 @@ def update_figure(click_data):
 
     fig_pie_alcohol = fig_pie_alcohol.update(layout_showlegend=False).add_annotation(x=0.5, y=0.5
                                                                                      , text=str(int(new_alcohol_value))
-                                                                                     , font=dict(size=20, family='Verdana', color='#00ff85')
+                                                                                     , font=dict(size=20,
+                                                                                                 family='Verdana',
+                                                                                                 color='#00ff85')
                                                                                      , showarrow=False)
 
+    # Update daily smoke pie chart
     fig_pie_smoke = px.pie(new_smoke_percentage_df
                            , values='values', names='names'
                            , hole=0.5, height=225.5
@@ -507,35 +521,39 @@ def update_figure(click_data):
                            , color_discrete_map={'progress': '#00ff85',
                                                  'remaining': 'grey'})
 
-    fig_pie_smoke = fig_pie_smoke.update_layout(title_text='Obesity Population'
-                                                  , margin=dict(t=50, b=50, l=50, r=50)
-                                                  , paper_bgcolor='black'
-                                                  , font_color='#00ff85'
-                                                  , hovermode=False).update_traces(sort=False, textinfo='none')
-
-    fig_pie_smoke = fig_pie_smoke.update(layout_showlegend=False).add_annotation(x=0.5, y=0.5
-                                                                                   , text=str(int(new_smoke_value)) + '%'
-                                                                                   , font=dict(size=20, family='Verdana', color='#00ff85')
-                                                                                   , showarrow=False)
-
-    fig_pie_social_support = px.pie(new_social_support_percentage_df
-                           , values='values', names='names'
-                           , hole=0.5, height=225.5
-                           , color='names'
-                           , color_discrete_map={'progress': '#00ff85',
-                                                 'remaining': 'grey'})
-
-    fig_pie_social_support = fig_pie_social_support.update_layout(title_text='Obesity Population'
+    fig_pie_smoke = fig_pie_smoke.update_layout(title_text='Daily Smokers (population %)'
                                                 , margin=dict(t=50, b=50, l=50, r=50)
                                                 , paper_bgcolor='black'
                                                 , font_color='#00ff85'
                                                 , hovermode=False).update_traces(sort=False, textinfo='none')
 
-    fig_pie_social_support = fig_pie_social_support.update(layout_showlegend=False).add_annotation(x=0.5, y=0.5
-                                                                                 , text=str(int(new_social_support_value)) + '%'
+    fig_pie_smoke = fig_pie_smoke.update(layout_showlegend=False).add_annotation(x=0.5, y=0.5
+                                                                                 , text=str(int(new_smoke_value)) + '%'
                                                                                  , font=dict(size=20, family='Verdana',
                                                                                              color='#00ff85')
                                                                                  , showarrow=False)
+
+    # Update social support pie chart
+    fig_pie_social_support = px.pie(new_social_support_percentage_df
+                                    , values='values', names='names'
+                                    , hole=0.5, height=225.5
+                                    , color='names'
+                                    , color_discrete_map={'progress': '#00ff85',
+                                                          'remaining': 'grey'})
+
+    fig_pie_social_support = fig_pie_social_support.update_layout(title_text='Social Support (population %)'
+                                                                  , margin=dict(t=50, b=50, l=50, r=50)
+                                                                  , paper_bgcolor='black'
+                                                                  , font_color='#00ff85'
+                                                                  , hovermode=False).update_traces(sort=False,
+                                                                                                   textinfo='none')
+
+    fig_pie_social_support = fig_pie_social_support.update(layout_showlegend=False).add_annotation(x=0.5, y=0.5
+                                                                                                   , text=str(int(new_social_support_value)) + '%'
+                                                                                                   , font=dict(size=20,
+                                                                                                               family='Verdana',
+                                                                                                               color='#00ff85')
+                                                                                                   , showarrow=False)
 
     return fig_pie_obesity, fig_pie_alcohol, fig_pie_smoke, fig_pie_social_support
 
