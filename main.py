@@ -7,7 +7,7 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 #############################################################
 
-# Data Processing area #
+# Data Processing section #
 
 # transform obesity dataset
 obesity_df = pd.read_csv("obesity_by_country.csv")
@@ -56,7 +56,7 @@ alcohol_mean_full_filtered_df = alcohol_mean_full_df[mask]
 
 #############################################################
 
-# Figures and Components area #
+# Figures and Components section #
 
 # Choropleth Map
 
@@ -133,7 +133,7 @@ fig_lineChart2 = fig_lineChart2.update_traces(
 
 #############################################################
 
-# App Layout #
+# App Layout section #
 
 app.layout = html.Div(
     id="root",
@@ -422,7 +422,7 @@ app.layout = html.Div(
 
 #############################################################
 
-# Callbacks area #
+# Callbacks section#
 
 # Choropleth map click data
 
